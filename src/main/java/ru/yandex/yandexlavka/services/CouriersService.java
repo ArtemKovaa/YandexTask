@@ -111,11 +111,7 @@ public class CouriersService {
         if (ordersCount > 0) {
             long differenceInMillis = endDate.getTime() - startDate.getTime();
             int preResult = ordersCount / (int) TimeUnit.MILLISECONDS.toHours(differenceInMillis);
-            return switch (courier.getType()) {
-                case FOOT -> preResult * 3;
-                case BIKE -> preResult * 2;
-                case AUTO -> preResult;
-            };
+            return preResult * courier.getType().getRatingQuotient();
         } else {
             return null;
         }
@@ -123,10 +119,7 @@ public class CouriersService {
 
     private Integer getCourierEarnings(Long id, Date startDate, Date endDate, Courier courier) {
         Optional<Integer> optionalEarnings = ordersRepository.getEarningsInPeriodByCourierId(id, startDate, endDate);
-        return optionalEarnings.map(integer -> switch (courier.getType()) {
-            case FOOT -> integer * 2;
-            case BIKE -> integer * 3;
-            case AUTO -> integer * 4;
-        }).orElse(null);
+        return optionalEarnings.map(earnings -> earnings * courier.getType().getEarningsQuotient())
+                .orElse(null);
     }
 }

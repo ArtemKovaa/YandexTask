@@ -3,9 +3,9 @@ package ru.yandex.yandexlavka.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +17,19 @@ public class Courier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
     public enum Type {
-        FOOT, BIKE, AUTO;
+        FOOT(2, 3),
+        BIKE(3, 2),
+        AUTO(4, 1);
+
+        private final int earningsQuotient;
+        private final int ratingQuotient;
+
+        Type(int earningsQuotient, int ratingQuotient) {
+            this.earningsQuotient = earningsQuotient;
+            this.ratingQuotient = ratingQuotient;
+        }
 
         @JsonCreator
         public static Type getValue(String name) {
